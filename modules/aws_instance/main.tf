@@ -5,7 +5,8 @@ variable "key_name" {}
 variable "security_group_id" {}
 
 provider "aws" {
-  region = "eu-west-3"
+  alias  = "eu-west-2"
+  region = "eu-west-2"
 }
 
 resource "aws_instance" "web_app" {

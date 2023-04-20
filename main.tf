@@ -23,6 +23,9 @@ module "aws_instance" {
   region            = var.region
   security_group_id = module.security_group.security_group_id
   key_name          = module.ssh_key.key_name
+  providers = {
+    aws = aws.eu-west-2
+  }
 }
 
 module "ansible_inventory" {
