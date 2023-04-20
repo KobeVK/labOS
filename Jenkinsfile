@@ -102,69 +102,61 @@ pipeline {
 			}
 		}
 		
-		stage('install') {	
-			steps {
-				withCredentials([sshUserPrivateKey(credentialsId: "sshUserPrivateKey", keyFileVariable: 'KEY')]) {
-					script{
-						sh """
-							ansible-playbook deploy_app_playbook.yml
-							echo "your deployed web-app can be access here -> http://${env.IP}:8000"
-						"""
-					}
-				}
-			}
-		}
+		// stage('install') {	
+		// 	steps {
+		// 		withCredentials([sshUserPrivateKey(credentialsId: "sshUserPrivateKey", keyFileVariable: 'KEY')]) {
+		// 			script{
+		// 				sh """
+		// 					ansible-playbook deploy_app_playbook.yml
+		// 					echo "your deployed web-app can be access here -> http://${env.IP}:8000"
+		// 				"""
+		// 			}
+		// 		}
+		// 	}
+		// }
 
-		stage('test') {
-			steps {
-				script{
-					sh """
-                    	bash ./tests/health_check.sh ${env.IP}
-                	"""
-				}
-			}
-			post{
-			    failure {
-				    script{
-					    sendEmail(mailTo)
-				    }
-			    }
-		    }	
-		}
+		// stage('test') {
+		// 	steps {
+		// 		script{
+		// 			sh """
+        //             	bash ./tests/health_check.sh ${env.IP}
+        //         	"""
+		// 		}
+		// 	}
+		// 	post{
+		// 	    failure {
+		// 		    script{
+		// 			    sendEmail(mailTo)
+		// 		    }
+		// 	    }
+		//     }	
+		// }
 		
-		stage('destroy image') {
-			steps {
-                withAWS(credentials: 'aws-access-key') {
-					script{
-						destroyENV()
-					}
-				}
-			}
-		}
+		// stage('destroy image') {
+		// 	steps {
+        //         withAWS(credentials: 'aws-access-key') {
+		// 			script{
+		// 				destroyENV()
+		// 			}
+		// 		}
+		// 	}
+		// }
 	}
 }
 
-// def deployENV() {
+
+// def destroyENV(ami,region,type) {
 // 	sh """
-// 		echo "Starting Terraform init"
-// 		terraform init
-// 		terraform plan -out myplan -var="ami=${ami}" -var="region=${region}" -var="type=${type}"
-// 		terraform apply -auto-approve -var="ami=${ami}" -var="region=${region}" -var="type=${type}"
+// 		sleep 600
+// 		echo "Starting Terraform destroy"
+// 		terraform destroy -auto-approve -var="ami=${ami}" -var="region=${region}" -var="type=${type}"
 // 	"""
 // }
 
-def destroyENV(ami,region,type) {
-	sh """
-		sleep 600
-		echo "Starting Terraform destroy"
-		terraform destroy -auto-approve -var="ami=${ami}" -var="region=${region}" -var="type=${type}"
-	"""
-}
-
-def sendEmail(mailTo) {
-    println "send mail to recipients - " + mailTo
-    def strSubject = "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
-    def strBody = """<p>FAILED: Job <b>'${env.JOB_NAME} [${env.BUILD_NUMBER}]'</b>:</p>
-        <p>Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>"</p>"""
-    emailext body: strBody, subject: strSubject, to: mailTo, mimeType: "text/html"
-}
+// def sendEmail(mailTo) {
+//     println "send mail to recipients - " + mailTo
+//     def strSubject = "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
+//     def strBody = """<p>FAILED: Job <b>'${env.JOB_NAME} [${env.BUILD_NUMBER}]'</b>:</p>
+//         <p>Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>"</p>"""
+//     emailext body: strBody, subject: strSubject, to: mailTo, mimeType: "text/html"
+// }
