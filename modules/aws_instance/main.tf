@@ -1,9 +1,3 @@
-variable "ami" {}
-variable "region" {}
-variable "type" {}
-variable "key_name" {}
-variable "security_group_id" {}
-
 provider "aws" {
   region = var.region
 }

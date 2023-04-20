@@ -1,3 +1,9 @@
+variable "ami" {}
+variable "region" {}
+variable "type" {}
+variable "key_name" {}
+variable "security_group_id" {}
+
 module "aws_instance" {
   source = "./modules/aws_instance"
 
