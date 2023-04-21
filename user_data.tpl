@@ -6,4 +6,4 @@ chmod +x /usr/local/bin/docker-compose
 cat <<'DOCKER_COMPOSE_YML' > /root/docker-compose.yml
 ${docker_compose_yml}
 DOCKER_COMPOSE_YML
-docker-compose -f /root/docker-compose.yml up -d
+# docker-compose -f /root/docker-compose.yml up -d
