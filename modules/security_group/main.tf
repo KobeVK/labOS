@@ -1,5 +1,4 @@
-variable "name" {}
-variable "tags" {}
+
 
 resource "aws_security_group" "web" {
   name_prefix = var.name

@@ -1,53 +1,57 @@
 variable "ami" {}
 variable "region" {}
 variable "type" {}
+variable "name" {}
+variable "tags" {}
+variable "key_name" {}
+variable "public_key_path" {}
 
-module "ssh_key" {
-  source          = "./modules/ssh_key"
-  key_name        = "key"
-  public_key_path = "~/.ssh/key.pub"
+provider "aws" {
+  region     = var.region
 }
 
-module "security_group" {
-  source      = "./modules/security_group"
-  name        = "web"
-  tags = {
-    Name = "web"
+resource "aws_key_pair" "ssh_key" {
+  key_name   = var.key_name
+  public_key = file(var.public_key_path)
+}
+
+output "key_name" {
+  value = aws_key_pair.ssh_key.key_name
+}
+
+resource "aws_security_group" "web" {
+  name_prefix = var.name
+  
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = var.tags
 }
 
-module "aws_instance" {
-  source            = "./modules/aws_instance"
-  ami               = var.ami
-  type              = var.type
-  region            = var.region
-  security_group_id = module.security_group.security_group_id
-  key_name          = module.ssh_key.key_name
+output "security_group_id" {
+  value = aws_security_group.web.id
 }
 
-module "ansible_inventory" {
-  source    = "./modules/ansible_inventory"
-  public_ip = module.aws_instance.public_ip
+resource "aws_instance" "githubapi" {
+  ami           = var.ami
+  instance_type = var.type
+  key_name      = "labos"
+  vpc_security_group_ids =  [""]
 }
 
+output "web_app_access_ip" {  
+  value = aws_instance.web_app.public_ip
+}
 
-# module "vpc" {
-#     source = "terraform-aws-modules/vpc/aws"
-#     version = "3.14.0"
+resource "local_file" "inventory" {
+  content = <<-EOT
+    [myhosts]
+    ${aws_instance.web_app.public_ip} ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/mac_23.pem
+  EOT
 
-#     name = var.vpc_name
-#     cidr = var.vpc_cidr
-
-#     azs = var.vpc_azs
-#     private_subnets = var.vpc_private_subnets
-#     public_subnets = var.vpc_public_subnets
-
-#     enable_nat_gateway = var.vpc_enable_nat_gateway
-
-#     tags = var.vpc_tags
-# }
-
-# provider "aws" {
-#   alias  = "eu-west-2"
-#   region = "eu-west-2"
-# }
+  filename = "/etc/ansible/hosts"
+}
