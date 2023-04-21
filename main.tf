@@ -44,15 +44,7 @@ resource "aws_instance" "githubapi" {
   key_name      = "labos"
   vpc_security_group_ids = [aws_security_group.web.id]
 
-  user_data = <<-EOF
-            #!/bin/bash
-            apt-get update
-            apt-get install -y docker.io
-            curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-            chmod +x /usr/local/bin/docker-compose
-            echo "${base64encode(file("docker-compose.yml"))}" | base64 --decode > /root/docker-compose.yml
-            docker-compose -f Docker/docker-compose.yml up -d
-            EOF
+  user_data = templatefile("user_data.tpl", { docker_compose_yml = file("Docker/docker-compose.yml") })  
 }
 
 output "web_app_access_ip" {  
