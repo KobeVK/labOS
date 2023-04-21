@@ -18,7 +18,7 @@ pipeline {
         )
         choice(
             name: 'type',
-            choices: ['t2.micro', 'm5.large', 'c5.xlarge', 'r5.4xlarge'],
+            choices: ['t2.xlarge', 'm5.large', 'c5.xlarge', 'r5.4xlarge'],
             description: 'Select the insctance type'
         )
 	}
