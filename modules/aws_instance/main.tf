@@ -13,7 +13,7 @@ terraform {
 }
 
 provider "aws" {
-  region = var.region
+  region = "eu-west-3"
 }
 
 resource "aws_instance" "web_app" {

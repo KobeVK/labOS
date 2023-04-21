@@ -2,15 +2,10 @@ variable "ami" {}
 variable "region" {}
 variable "type" {}
 
-# provider "aws" {
-#   alias  = "eu-west-2"
-#   region = "eu-west-2"
-# }
-
 module "ssh_key" {
   source          = "./modules/ssh_key"
-  key_name        = "labos"
-  public_key_path = "~/.ssh/labos.pub"
+  key_name        = "key"
+  public_key_path = "~/.ssh/key.pub"
 }
 
 module "security_group" {
@@ -20,6 +15,21 @@ module "security_group" {
     Name = "web"
   }
 }
+
+module "aws_instance" {
+  source            = "./modules/aws_instance"
+  ami               = var.ami
+  type              = var.type
+  region            = var.region
+  security_group_id = module.security_group.security_group_id
+  key_name          = module.ssh_key.key_name
+}
+
+module "ansible_inventory" {
+  source    = "./modules/ansible_inventory"
+  public_ip = module.aws_instance.public_ip
+}
+
 
 # module "vpc" {
 #     source = "terraform-aws-modules/vpc/aws"
@@ -37,20 +47,7 @@ module "security_group" {
 #     tags = var.vpc_tags
 # }
 
-module "aws_instance" {
-  source            = "./modules/aws_instance"
-  # name              = "GithubApiApp"
-  ami               = var.ami
-  type              = var.type
-  region            = var.region
-  security_group_id = module.security_group.security_group_id
-  key_name          = module.ssh_key.key_name
-  # providers = {
-  #   aws = aws.eu-west-2
-  # }
-}
-
-module "ansible_inventory" {
-  source    = "./modules/ansible_inventory"
-  public_ip = module.aws_instance.public_ip
-}
+# provider "aws" {
+#   alias  = "eu-west-2"
+#   region = "eu-west-2"
+# }
