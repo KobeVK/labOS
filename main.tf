@@ -5,7 +5,7 @@ variable "region" {
   default = "eu-west-3"
 }
 variable "type" {
-  default = "t2.micro"
+  default = "t2.large"
 }
 variable "name" {
   default = "githubAPI"
@@ -16,26 +16,10 @@ variable "tags" {
     Environment = "Dev"
   }
 }
-# variable "key_name" {
-#   default = "labos"
-# }
-
-# variable "public_key_path" {
-#   default = "~/.ssh/labos.pub"
-# }
 
 provider "aws" {
   region     = var.region
 }
-
-# resource "aws_key_pair" "ssh_key" {
-#   key_name   = var.key_name
-#   public_key = file(var.public_key_path)
-# }
-
-# output "key_name" {
-#   value = aws_key_pair.ssh_key.key_name
-# }
 
 resource "aws_security_group" "web" {
   name_prefix = var.name
@@ -59,6 +43,16 @@ resource "aws_instance" "githubapi" {
   instance_type = var.type
   key_name      = "labos"
   vpc_security_group_ids = [aws_security_group.web.id]
+
+  user_data = <<-EOF
+            #!/bin/bash
+            apt-get update
+            apt-get install -y docker.io
+            curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            chmod +x /usr/local/bin/docker-compose
+            echo "${base64encode(file("docker-compose.yml"))}" | base64 --decode > /root/docker-compose.yml
+            docker-compose -f Docker/docker-compose.yml up -d
+            EOF
 }
 
 output "web_app_access_ip" {  

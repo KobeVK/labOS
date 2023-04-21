@@ -79,24 +79,24 @@ pipeline {
 						""", returnStdout: true
 						).trim()
 						env.IP = access_ip
-						def success = false
-						def startTime = currentBuild.startTimeInMillis
-						def timeout = 120000 // 2 minutes
-						def interval = 50 // 10 seconds
-						while (!success && (currentBuild.startTimeInMillis - startTime) < timeout) {
-							try {
-								sh """	
-									ansible all -m ping
-								"""
-								success = true
-							} catch (Exception e) {
-								println "trying to reach host"
-								sleep interval
-							}
-						}
-						if (!success) {
-							error "Timed out while trying to reach host"
-						}
+						// def success = false
+						// def startTime = currentBuild.startTimeInMillis
+						// def timeout = 120000 // 2 minutes
+						// def interval = 50 // 10 seconds
+						// while (!success && (currentBuild.startTimeInMillis - startTime) < timeout) {
+						// 	try {
+						// 		sh """	
+						// 			ansible all -m ping
+						// 		"""
+						// 		success = true
+						// 	} catch (Exception e) {
+						// 		println "trying to reach host"
+						// 		sleep interval
+						// 	}
+						// }
+						// if (!success) {
+						// 	error "Timed out while trying to reach host"
+						// }
 					}
 				}
 			}
