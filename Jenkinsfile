@@ -57,13 +57,13 @@ pipeline {
 			steps {
                 withAWS(credentials: 'aws-access-key') {
 					script {
-							env.prevent_destroy = "true"
-								sh """
-									echo "Starting Terraform init"
-									terraform init
-									terraform plan -out myplan -var="ami=${ami}" -var="region=${region}" -var="type=${type}"
-									terraform apply -auto-approve -var="ami=${ami}" -var="region=${region}" -var="type=${type}"
-								"""
+						env.prevent_destroy = "true"
+							sh """
+								echo "Starting Terraform init"
+								terraform init
+								terraform plan -out myplan -var="ami=${ami}" -var="region=${region}" -var="type=${type}"
+								terraform apply -auto-approve -var="ami=${ami}" -var="region=${region}" -var="type=${type}"
+							"""
 					}
 				}
 			}
