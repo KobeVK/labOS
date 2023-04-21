@@ -15,7 +15,7 @@ As part of this Home assignment, I was required to create a web-app behind an Ng
 
 
 # Architecture
-![Versatile web app CI diagram](media/labOS.png)
+![Versatile web app CI diagram](media/lab-os.png)
 
 <br>
 Versatile web app  CICD flow involves the following stages: <br><br>
