@@ -2,6 +2,11 @@ variable "ami" {}
 variable "region" {}
 variable "type" {}
 
+provider "aws" {
+  alias  = "eu-west-2"
+  region = "eu-west-2"
+}
+
 module "ssh_key" {
   source          = "./modules/ssh_key"
   key_name        = "labos"
