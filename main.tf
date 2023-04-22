@@ -58,7 +58,7 @@ resource "aws_instance" "githubapi" {
   key_name      = "labos"
   vpc_security_group_ids = [aws_security_group.web.id]
 
-  user_data = templatefile("user_data.tpl", { docker_compose_yml = file("Docker/docker-compose.yml") })  
+  user_data = templatefile("user_data.tpl", { docker_compose_yml = file("docker-compose.yml") })  
 }
 
 output "web_app_access_ip" {  
