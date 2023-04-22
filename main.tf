@@ -65,11 +65,11 @@ output "web_app_access_ip" {
   value = aws_instance.githubapi.public_ip
 }
 
-resource "null_resource" "copy_directory" {
-  provisioner "local-exec" {
-    command = "scp -r ../LABOS ubuntu@${aws_instance.githubapi.public_ip}:/home/ubuntu"
-  }
-}
+# resource "null_resource" "copy_directory" {
+#   provisioner "local-exec" {
+#     command = "scp -r ../LABOS ubuntu@${aws_instance.githubapi.public_ip}:/home/ubuntu"
+#   }
+# }
 
 # resource "local_file" "inventory" {
 #   content = <<-EOT
