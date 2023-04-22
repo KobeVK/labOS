@@ -1,0 +1,36 @@
+
+version: '3.7'
+
+networks:
+  app:
+    driver: bridge
+
+services:
+  githubapi:
+    build:
+      context: Docker/
+      dockerfile: githubapi.dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./githubapi:/home/ubuntu/githubapi/
+    command: sh -c "python3 /home/ubuntu/githubapi/manage.py runserver 0.0.0.0:8080"
+    container_name: githubapi
+    # expose:
+    #   - 8080
+    networks:
+      - app
+    
+  nginx:
+    build:
+      context: Docker/
+      dockerfile: nginx.dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - githubapi
+    # expose:
+    #   - 80
+    networks:
+      - app
+  
