@@ -10,6 +10,6 @@ chmod +x /usr/local/bin/docker-compose
 #cloning the repo
 sudo yum update -y
 sudo yum install -y git
-sudo git clone https://github.com/KobeVK/labOS.git /home/ubuntu
+sudo git clone https://github.com/KobeVK/labOS.git
 cd /home/ubuntu/labOS
 sudo docker-compose -f /home/ubuntu/labOS/docker-compose.yml up -d
