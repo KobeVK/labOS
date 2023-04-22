@@ -8,7 +8,7 @@ networks:
 services:
   githubapi:
     build:
-      context: Docker/
+      context: .
       dockerfile: githubapi.dockerfile
     ports:
       - "8080:8080"
@@ -16,21 +16,17 @@ services:
       - ./githubapi:/home/ubuntu/githubapi/
     command: sh -c "python3 /home/ubuntu/githubapi/manage.py runserver 0.0.0.0:8080"
     container_name: githubapi
-    # expose:
-    #   - 8080
     networks:
       - app
     
   nginx:
     build:
-      context: Docker/
+      context: .
       dockerfile: nginx.dockerfile
     ports:
       - "80:80"
     depends_on:
       - githubapi
-    # expose:
-    #   - 80
     networks:
       - app
   
