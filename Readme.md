@@ -35,6 +35,18 @@ To deploy development enviornemt:
 1. cd LABOS/
 1. export aws_key = "<your_aws_key>"
 1. export aws_secret = "<your_aws_secret>"
+1. terrafrom init
+1. terraform apply
+
+# Setup througt pipeline (Jenkins)
+To deploy enviornemt using jenkins pipeline:
+1. head over to http://35.180.188.19:8080/job/deployEnv/
+1. cd LABOS/
+1. export aws_key = "<your_aws_key>"
+1. export aws_secret = "<your_aws_secret>"
 3. terrafrom init
 4. terraform apply
+
+
+
 
