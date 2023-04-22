@@ -53,7 +53,7 @@ pipeline {
 			}
 		}
 
-		stage('deploy') {
+		stage('deploy env') {
 			steps {
                 withAWS(credentials: 'aws-access-key') {
 					script {
@@ -69,7 +69,7 @@ pipeline {
 			}
 		}
 
-		stage('verify hosts are reachable') {
+		stage('print instance IP') {
 			steps {
 				withCredentials([sshUserPrivateKey(credentialsId: "sshUserPrivateKey", keyFileVariable: 'KEY')]) {
 					script {
@@ -79,84 +79,9 @@ pipeline {
 						""", returnStdout: true
 						).trim()
 						env.IP = access_ip
-						// def success = false
-						// def startTime = currentBuild.startTimeInMillis
-						// def timeout = 120000 // 2 minutes
-						// def interval = 50 // 10 seconds
-						// while (!success && (currentBuild.startTimeInMillis - startTime) < timeout) {
-						// 	try {
-						// 		sh """	
-						// 			ansible all -m ping
-						// 		"""
-						// 		success = true
-						// 	} catch (Exception e) {
-						// 		println "trying to reach host"
-						// 		sleep interval
-						// 	}
-						// }
-						// if (!success) {
-						// 	error "Timed out while trying to reach host"
-						// }
 					}
 				}
 			}
 		}
-		
-		// stage('install') {	
-		// 	steps {
-		// 		withCredentials([sshUserPrivateKey(credentialsId: "sshUserPrivateKey", keyFileVariable: 'KEY')]) {
-		// 			script{
-		// 				sh """
-		// 					ansible-playbook deploy_app_playbook.yml
-		// 					echo "your deployed web-app can be access here -> http://${env.IP}:8000"
-		// 				"""
-		// 			}
-		// 		}
-		// 	}
-		// }
-
-		// stage('test') {
-		// 	steps {
-		// 		script{
-		// 			sh """
-        //             	bash ./tests/health_check.sh ${env.IP}
-        //         	"""
-		// 		}
-		// 	}
-		// 	post{
-		// 	    failure {
-		// 		    script{
-		// 			    sendEmail(mailTo)
-		// 		    }
-		// 	    }
-		//     }	
-		// }
-		
-		// stage('destroy image') {
-		// 	steps {
-        //         withAWS(credentials: 'aws-access-key') {
-		// 			script{
-		// 				destroyENV()
-		// 			}
-		// 		}
-		// 	}
-		// }
 	}
 }
-
-
-// def destroyENV(ami,region,type) {
-// 	sh """
-// 		sleep 600
-// 		echo "Starting Terraform destroy"
-// 		terraform destroy -auto-approve -var="ami=${ami}" -var="region=${region}" -var="type=${type}"
-// 	"""
-// }
-
-// def sendEmail(mailTo) {
-//     println "send mail to recipients - " + mailTo
-//     def strSubject = "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
-//     def strBody = """<p>FAILED: Job <b>'${env.JOB_NAME} [${env.BUILD_NUMBER}]'</b>:</p>
-//         <p>Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>"</p>"""
-//     emailext body: strBody, subject: strSubject, to: mailTo, mimeType: "text/html"
-// }
